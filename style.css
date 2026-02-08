@@ -1,0 +1,231 @@
+/* 기본 설정 */
+:root {
+    --bg-color: #121212;       /* 아주 어두운 회색 (눈 편함) */
+    --card-bg: #1e1e1e;        /* 카드 배경 */
+    --text-main: #ffffff;      /* 메인 텍스트 */
+    --text-sub: #a0a0a0;       /* 서브 텍스트 */
+    --accent: #3b82f6;         /* 포인트 컬러 (모던 블루) */
+    --accent-hover: #2563eb;   /* 버튼 호버 컬러 */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+/* 네비게이션 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background-color: rgba(18, 18, 18, 0.95);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #333;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: var(--text-sub);
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+/* 히어로 섹션 */
+.hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.name {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #fff, #a5b4fc); /* 텍스트 그라데이션 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.description {
+    color: var(--text-sub);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+/* 섹션 공통 */
+.section {
+    padding: 80px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* About 그리드 */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #333;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.card p {
+    color: var(--text-sub);
+    font-size: 0.95rem;
+}
+
+/* 프로젝트 그리드 */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+    border: 1px solid #333;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-image {
+    height: 200px;
+    background-color: #333; /* 이미지 없을 때 회색 배경 */
+    /* 나중에 이미지가 생기면 아래처럼 추가하세요:
+    background-image: url('image.jpg');
+    background-size: cover; */
+}
+
+.project-info {
+    padding: 25px;
+}
+
+.project-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.tech-stack {
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.project-info p {
+    color: var(--text-sub);
+    font-size: 0.95rem;
+}
+
+/* 푸터 */
+footer {
+    text-align: center;
+    padding: 50px 20px;
+    border-top: 1px solid #333;
+    margin-top: 50px;
+}
+
+footer p {
+    color: var(--text-sub);
+    margin-bottom: 15px;
+}
+
+.social-links a {
+    color: var(--text-main);
+    margin: 0 10px;
+    font-weight: 600;
+}
+
+.social-links a:hover {
+    color: var(--accent);
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .name { font-size: 2.5rem; }
+    .hero { height: auto; padding: 100px 20px; }
+    .nav-links { display: none; } /* 간단하게 숨김, 추후 햄버거 메뉴 추가 가능 */
+}
