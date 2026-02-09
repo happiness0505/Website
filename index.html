@@ -3,633 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal.Hacker - Portfolio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-green: #00ff41;
-            --secondary-green: #00cc33;
-            --dark-bg: #0a0e27;
-            --darker-bg: #050811;
-            --terminal-bg: rgba(10, 14, 39, 0.95);
-            --border-color: #00ff4166;
-            --text-color: #00ff41;
-            --text-dim: #00cc3399;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            background: var(--darker-bg);
-            color: var(--text-color);
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* Animated Matrix Background */
-        #matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--terminal-bg);
-            border-bottom: 2px solid var(--border-color);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            justify-content: center;
-            align-items: center;
-        }
-
-        nav ul li a {
-            color: var(--text-color);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        nav ul li a:hover {
-            border: 1px solid var(--border-color);
-            box-shadow: 0 0 10px var(--primary-green);
-            background: rgba(0, 255, 65, 0.05);
-        }
-
-        nav ul li a::before {
-            content: '> ';
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        nav ul li a:hover::before {
-            opacity: 1;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 6rem 2rem 2rem;
-        }
-
-        /* Section Styles */
-        section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Terminal Window Style */
-        .terminal-window {
-            background: var(--terminal-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            margin: 2rem 0;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-        }
-
-        .terminal-header {
-            background: var(--dark-bg);
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .terminal-button {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--primary-green);
-            box-shadow: 0 0 5px var(--primary-green);
-        }
-
-        .terminal-button:nth-child(2) { background: #ffff00; box-shadow: 0 0 5px #ffff00; }
-        .terminal-button:nth-child(3) { background: #ff0000; box-shadow: 0 0 5px #ff0000; }
-
-        .terminal-content {
-            padding: 2rem;
-        }
-
-        /* Dashboard Section */
-        #dashboard .hero {
-            text-align: center;
-            padding: 3rem 0;
-        }
-
-        #dashboard h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 20px var(--primary-green);
-            animation: glitch 3s infinite;
-        }
-
-        @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
-            92% { transform: translate(-2px, 2px); }
-            94% { transform: translate(2px, -2px); }
-            96% { transform: translate(-2px, -2px); }
-        }
-
-        .typing-text {
-            font-size: 1.2rem;
-            color: var(--text-dim);
-            margin-bottom: 2rem;
-        }
-
-        .cursor {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .stat-card {
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.3);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Projects Section */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .project-card {
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary-green), transparent, var(--primary-green));
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary-green);
-        }
-
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .tag {
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid var(--border-color);
-            padding: 0.3rem 0.8rem;
-            font-size: 0.8rem;
-        }
-
-        /* History/Timeline Section */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border-color);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 2rem;
-        }
-
-        .timeline-item::before {
-            content: '>';
-            position: absolute;
-            left: -2.4rem;
-            width: 20px;
-            height: 20px;
-            background: var(--primary-green);
-            border: 2px solid var(--dark-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
-        .timeline-content {
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-        }
-
-        .timeline-date {
-            color: var(--primary-green);
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Blog Section */
-        .blog-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: var(--dark-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 0.8rem 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Courier New', monospace;
-        }
-
-        .btn:hover {
-            background: rgba(0, 255, 65, 0.1);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
-        }
-
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 2rem;
-        }
-
-        .blog-post {
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .blog-post:hover {
-            transform: translateX(5px);
-            border-color: var(--primary-green);
-        }
-
-        .blog-post h3 {
-            color: var(--primary-green);
-            margin-bottom: 0.5rem;
-        }
-
-        .blog-meta {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .blog-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .btn-small {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.9rem;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--terminal-bg);
-            border: 2px solid var(--border-color);
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 1.5rem;
-            color: var(--primary-green);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--primary-green);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 0.8rem;
-            font-family: 'Courier New', monospace;
-        }
-
-        .form-group textarea {
-            min-height: 200px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--darker-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-green);
-            border: 2px solid var(--darker-bg);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav ul {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            #dashboard h1 {
-                font-size: 2rem;
-            }
-
-            .projects-grid,
-            .blog-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 5rem 1rem 1rem;
-            }
-        }
-    </style>
+    <title>CyberHub - Security Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <canvas id="matrix-bg"></canvas>
-
-    <nav>
-        <ul>
-            <li><a href="#" data-section="dashboard">[ DASHBOARD ]</a></li>
-            <li><a href="#" data-section="projects">[ PROJECTS ]</a></li>
-            <li><a href="#" data-section="history">[ HISTORY ]</a></li>
-            <li><a href="#" data-section="blog">[ BLOG ]</a></li>
+    <!-- Animated Background -->
+    <canvas id="circuit-bg"></canvas>
+    <div class="scan-line"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <div class="logo-icon"></div>
+            <span>CYBER<span class="accent">HUB</span></span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#dashboard" class="nav-link active" data-page="dashboard">
+                <span class="nav-icon">▣</span> DASHBOARD
+            </a></li>
+            <li><a href="#news" class="nav-link" data-page="news">
+                <span class="nav-icon">◈</span> NEWS FEED
+            </a></li>
+            <li><a href="#career" class="nav-link" data-page="career">
+                <span class="nav-icon">◉</span> CAREER
+            </a></li>
+            <li><a href="#resources" class="nav-link" data-page="resources">
+                <span class="nav-icon">◊</span> RESOURCES
+            </a></li>
+            <li><a href="#projects" class="nav-link" data-page="projects">
+                <span class="nav-icon">◈</span> PROJECTS
+            </a></li>
+            <li><a href="#blog" class="nav-link" data-page="blog">
+                <span class="nav-icon">◐</span> BLOG
+            </a></li>
+            <li><a href="#lab" class="nav-link" data-page="lab">
+                <span class="nav-icon">◑</span> LAB
+            </a></li>
         </ul>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            <span id="current-time"></span>
+        </div>
     </nav>
 
-    <div class="container">
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="active">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <span style="margin-left: 1rem; color: var(--text-dim);">root@terminal:~$</span>
-                </div>
-                <div class="terminal-content">
-                    <div class="hero">
-                        <h1>TERMINAL.HACKER</h1>
-                        <p class="typing-text">$ Penetrating the digital realm...<span class="cursor">_</span></p>
-                        <p style="color: var(--text-dim);">[ SECURITY RESEARCHER | DEVELOPER | DIGITAL GHOST ]</p>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page active">
+            <div class="page-header">
+                <h1 class="glitch" data-text="SYSTEM DASHBOARD">SYSTEM DASHBOARD</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="grid-container">
+                <div class="hud-panel profile-card">
+                    <div class="panel-header">
+                        <span>◢ USER PROFILE</span>
+                        <span class="panel-status">ACTIVE</span>
                     </div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="terminal-window stat-card">
-                    <span class="stat-number">127</span>
-                    <span>PROJECTS COMPLETED</span>
-                </div>
-                <div class="terminal-window stat-card">
-                    <span class="stat-number">999+</span>
-                    <span>COFFEE CONSUMED</span>
-                </div>
-                <div class="terminal-window stat-card">
-                    <span class="stat-number">42</span>
-                    <span>VULNERABILITIES FOUND</span>
-                </div>
-                <div class="terminal-window stat-card">
-                    <span class="stat-number">100%</span>
-                    <span>UPTIME TARGET</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <span style="margin-left: 1rem; color: var(--text-dim);">root@projects:~$</span>
-                </div>
-                <div class="terminal-content">
-                    <h2 style="margin-bottom: 2rem; font-size: 2rem;">> ACTIVE PROJECTS</h2>
-                    <div class="projects-grid">
-                        <div class="project-card">
-                            <h3>// QUANTUM_CIPHER</h3>
-                            <p style="color: var(--text-dim); margin-bottom: 1rem;">
-                                차세대 양자 암호화 시스템 개발. 기존 RSA를 넘어선 보안 수준을 제공합니다.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">PYTHON</span>
-                                <span class="tag">CRYPTOGRAPHY</span>
-                                <span class="tag">QUANTUM</span>
-                            </div>
+                    <div class="panel-body">
+                        <div class="profile-avatar">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-img"></div>
                         </div>
-
-                        <div class="project-card">
-                            <h3>// NEURAL_EXPLOIT</h3>
-                            <p style="color: var(--text-dim); margin-bottom: 1rem;">
-                                AI 기반 취약점 탐지 시스템. 머신러닝을 활용한 자동화된 보안 분석.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">TENSORFLOW</span>
-                                <span class="tag">SECURITY</span>
-                                <span class="tag">AI</span>
-                            </div>
-                        </div>
-
-                        <div class="project-card">
-                            <h3>// GHOST_PROTOCOL</h3>
-                            <p style="color: var(--text-dim); margin-bottom: 1rem;">
-                                완벽한 익명성을 제공하는 통신 프로토콜. 추적 불가능한 P2P 네트워크.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">C++</span>
-                                <span class="tag">NETWORKING</span>
-                                <span class="tag">PRIVACY</span>
-                            </div>
-                        </div>
-
-                        <div class="project-card">
-                            <h3>// BLOCKCHAIN_ANALYZER</h3>
-                            <p style="color: var(--text-dim); margin-bottom: 1rem;">
-                                블록체인 트랜잭션 분석 도구. 의심스러운 활동을 실시간으로 탐지합니다.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">JAVASCRIPT</span>
-                                <span class="tag">WEB3</span>
-                                <span class="tag">BLOCKCHAIN</span>
+                        <div class="profile-info">
+                            <h2 class="profile-name">ADMIN_GHOST</h2>
+                            <p class="profile-role">Security Researcher | Developer</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">127</span>
+                                    <span class="stat-label">Projects</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">42</span>
+                                    <span class="stat-label">CVEs</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">5Y</span>
+                                    <span class="stat-label">Experience</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- History Section -->
-        <section id="history">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <span style="margin-left: 1rem; color: var(--text-dim);">root@history:~$</span>
+                <!-- Recent Posts -->
+                <div class="hud-panel recent-posts">
+                    <div class="panel-header">
+                        <span>◢ RECENT POSTS</span>
+                        <span class="panel-status">UPDATED</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="post-list" id="recentPosts">
+                            <!-- Posts will be dynamically loaded -->
+                        </div>
+                    </div>
                 </div>
-                <div class="terminal-content">
-                    <h2 style="margin-bottom: 2rem; font-size: 2rem;">> TIMELINE</h2>
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <div class="timeline-date">[2024.12] - PRESENT</div>
-                                <h3>Senior Security Researcher</h3>
-                                <p style="color: var(--text-dim); margin-top: 0.5rem;">
-                                    글로벌 보안 기업에서 고급 위협 분석 및 침투 테스트 수행
-                                </p>
+
+                <!-- Todo List -->
+                <div class="hud-panel todo-panel">
+                    <div class="panel-header">
+                        <span>◢ TODO LIST</span>
+                        <button class="panel-btn" id="addTodoBtn">+</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="todo-list" id="todoList">
+                            <!-- Todos will be dynamically loaded -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Stats -->
+                <div class="hud-panel stats-panel">
+                    <div class="panel-header">
+                        <span>◢ SYSTEM STATS</span>
+                        <span class="panel-status">MONITORING</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="circular-progress">
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="progress-ring-circle" stroke="#00ffff" stroke-width="4" fill="transparent" r="52" cx="60" cy="60"/>
+                            </svg>
+                            <div class="progress-text">
+                                <span class="progress-value">87</span>
+                                <span class="progress-label">%</span>
                             </div>
                         </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <div class="timeline-date">[2023.06 - 2024.11]</div>
-                                <h3>Lead Developer - CyberSec Corp</h3>
-                                <p style="color: var(--text-dim); margin-top: 0.5rem;">
-                                    보안 솔루션 개발 팀 리드, 주요 정부기관 프로젝트 담당
-                                </p>
+                        <div class="stat-bars">
+                            <div class="stat-bar-item">
+                                <span>CPU Usage</span>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" style="width: 65%"></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <div class="timeline-date">[2021.03 - 2023.05]</div>
-                                <h3>Security Analyst</h3>
-                                <p style="color: var(--text-dim); margin-top: 0.5rem;">
-                                    대규모 시스템 보안 감사 및 취약점 분석 전문
-                                </p>
+                            <div class="stat-bar-item">
+                                <span>Memory</span>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" style="width: 82%"></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-content">
-                                <div class="timeline-date">[2020.01]</div>
-                                <h3>Bug Bounty Hunter</h3>
-                                <p style="color: var(--text-dim); margin-top: 0.5rem;">
-                                    주요 플랫폼들의 치명적 취약점 발견 및 보고
-                                </p>
+                            <div class="stat-bar-item">
+                                <span>Network</span>
+                                <div class="stat-bar">
+                                    <div class="stat-bar-fill" style="width: 45%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -637,243 +155,158 @@
             </div>
         </section>
 
-        <!-- Blog Section -->
-        <section id="blog">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <div class="terminal-button"></div>
-                    <span style="margin-left: 1rem; color: var(--text-dim);">root@blog:~$</span>
-                </div>
-                <div class="terminal-content">
-                    <h2 style="margin-bottom: 2rem; font-size: 2rem;">> BLOG ENTRIES</h2>
-                    
-                    <div class="blog-controls">
-                        <button class="btn" id="createPostBtn">[ + NEW POST ]</button>
-                        <input type="text" id="searchInput" placeholder="$ search..." 
-                               style="flex: 1; max-width: 300px; background: var(--dark-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 0.8rem; font-family: 'Courier New', monospace;">
-                    </div>
+        <!-- News Page -->
+        <section id="news" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="NEWS FEED">NEWS FEED</h1>
+                <div class="header-line"></div>
+            </div>
+            
+            <div class="news-controls">
+                <button class="filter-btn active" data-filter="all">ALL</button>
+                <button class="filter-btn" data-filter="security">SECURITY</button>
+                <button class="filter-btn" data-filter="tech">TECH</button>
+                <button class="refresh-btn" id="refreshNews">↻ REFRESH</button>
+            </div>
 
-                    <div class="blog-grid" id="blogGrid">
-                        <!-- Blog posts will be dynamically inserted here -->
-                    </div>
-                </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- News items will be loaded here -->
             </div>
         </section>
-    </div>
 
-    <!-- Blog Modal -->
-    <div class="modal" id="blogModal">
+        <!-- Career Page -->
+        <section id="career" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="CAREER TIMELINE">CAREER TIMELINE</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="career-controls">
+                <button class="career-btn active" data-view="timeline">TIMELINE VIEW</button>
+                <button class="career-btn" data-view="detailed">DETAILED VIEW</button>
+                <button class="download-btn" id="downloadResume">⬇ DOWNLOAD CV</button>
+            </div>
+
+            <div id="timelineView" class="career-view active">
+                <!-- Timeline will be loaded here -->
+            </div>
+
+            <div id="detailedView" class="career-view">
+                <!-- Detailed resume will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Resources Page -->
+        <section id="resources" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="RESOURCE LIBRARY">RESOURCE LIBRARY</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="resource-controls">
+                <input type="text" id="resourceSearch" placeholder="Search resources..." class="search-input">
+                <button class="add-btn" id="addResourceBtn">+ ADD RESOURCE</button>
+            </div>
+
+            <div class="resource-categories" id="resourceCategories">
+                <!-- Resource categories will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Projects Page -->
+        <section id="projects" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="PROJECT SHOWCASE">PROJECT SHOWCASE</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="project-grid" id="projectGrid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Blog Page -->
+        <section id="blog" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="BLOG SYSTEM">BLOG SYSTEM</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="blog-info">
+                <div class="info-box">
+                    <h3>◢ Obsidian Integration</h3>
+                    <p>Connected via Obsidian Git Plugin → GitHub → Auto Deploy</p>
+                    <code>Next.js + Contentlayer + MDX</code>
+                </div>
+            </div>
+
+            <div class="blog-controls">
+                <input type="text" id="blogSearch" placeholder="Search posts..." class="search-input">
+                <select id="blogCategory" class="select-input">
+                    <option value="all">All Categories</option>
+                    <option value="security">Security</option>
+                    <option value="development">Development</option>
+                    <option value="tutorial">Tutorial</option>
+                </select>
+            </div>
+
+            <div class="blog-grid" id="blogGrid">
+                <!-- Blog posts will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Lab Page -->
+        <section id="lab" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="EXPERIMENTAL LAB">EXPERIMENTAL LAB</h1>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="lab-warning">
+                <span class="warning-icon">⚠</span>
+                <p>CAUTION: Experimental services in testing phase</p>
+            </div>
+
+            <div class="lab-grid" id="labGrid">
+                <!-- Lab services will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="todoModal">
         <div class="modal-content">
-            <h2 id="modalTitle">[ NEW POST ]</h2>
-            <form id="blogForm">
-                <div class="form-group">
-                    <label for="postTitle">TITLE:</label>
-                    <input type="text" id="postTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="postContent">CONTENT:</label>
-                    <textarea id="postContent" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="postTags">TAGS (comma separated):</label>
-                    <input type="text" id="postTags" placeholder="security, hacking, tutorial">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" id="cancelBtn">[ CANCEL ]</button>
-                    <button type="submit" class="btn">[ PUBLISH ]</button>
-                </div>
-            </form>
+            <div class="modal-header">
+                <h3>ADD TODO</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="todoInput" placeholder="Enter task..." class="modal-input">
+                <button class="modal-btn" id="saveTodoBtn">SAVE</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Matrix Background Animation
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
+    <div class="modal" id="resourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ADD RESOURCE</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="resourceTitle" placeholder="Title..." class="modal-input">
+                <input type="text" id="resourceUrl" placeholder="URL..." class="modal-input">
+                <select id="resourceCategory" class="modal-input">
+                    <option value="learning">Learning</option>
+                    <option value="tools">Tools</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="community">Community</option>
+                </select>
+                <button class="modal-btn" id="saveResourceBtn">SAVE</button>
+            </div>
+        </div>
+    </div>
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(5, 8, 17, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrix, 35);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Navigation
-        const navLinks = document.querySelectorAll('nav a');
-        const sections = document.querySelectorAll('section');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const sectionId = link.getAttribute('data-section');
-                
-                sections.forEach(section => section.classList.remove('active'));
-                document.getElementById(sectionId).classList.add('active');
-            });
-        });
-
-        // Blog Functionality
-        let blogPosts = [
-            {
-                id: 1,
-                title: 'SQL Injection 완벽 가이드',
-                content: 'SQL Injection은 웹 애플리케이션에서 가장 흔한 보안 취약점 중 하나입니다. 이 글에서는 SQLi의 원리와 방어 방법을 상세히 다룹니다...',
-                date: '2024.02.01',
-                tags: ['security', 'sql', 'tutorial']
-            },
-            {
-                id: 2,
-                title: 'Zero-Day 취약점 발견 경험담',
-                content: '최근 발견한 크리티컬 제로데이 취약점에 대한 기술적 분석과 발견 과정을 공유합니다. CVE 등록 완료...',
-                date: '2024.01.28',
-                tags: ['zero-day', 'vulnerability', 'research']
-            },
-            {
-                id: 3,
-                title: 'Reverse Engineering 시작하기',
-                content: 'IDA Pro와 Ghidra를 활용한 바이너리 분석 입문 가이드. 실전 예제와 함께 배우는 리버싱의 기초...',
-                date: '2024.01.20',
-                tags: ['reverse-engineering', 'malware', 'tutorial']
-            }
-        ];
-
-        let editingPostId = null;
-
-        function renderBlogPosts(posts = blogPosts) {
-            const blogGrid = document.getElementById('blogGrid');
-            blogGrid.innerHTML = '';
-
-            posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'blog-post';
-                postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <div class="blog-meta">${post.date} | ${post.tags.map(tag => `#${tag}`).join(' ')}</div>
-                    <p style="color: var(--text-dim); margin: 1rem 0;">${post.content.substring(0, 150)}...</p>
-                    <div class="blog-actions">
-                        <button class="btn btn-small" onclick="viewPost(${post.id})">[ READ ]</button>
-                        <button class="btn btn-small" onclick="editPost(${post.id})">[ EDIT ]</button>
-                        <button class="btn btn-small" onclick="deletePost(${post.id})">[ DELETE ]</button>
-                    </div>
-                `;
-                blogGrid.appendChild(postElement);
-            });
-        }
-
-        // Modal Controls
-        const modal = document.getElementById('blogModal');
-        const createPostBtn = document.getElementById('createPostBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const blogForm = document.getElementById('blogForm');
-
-        createPostBtn.addEventListener('click', () => {
-            editingPostId = null;
-            document.getElementById('modalTitle').textContent = '[ NEW POST ]';
-            blogForm.reset();
-            modal.classList.add('active');
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        blogForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
-            const tags = document.getElementById('postTags').value.split(',').map(tag => tag.trim());
-            
-            const now = new Date();
-            const date = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
-
-            if (editingPostId) {
-                const post = blogPosts.find(p => p.id === editingPostId);
-                post.title = title;
-                post.content = content;
-                post.tags = tags;
-            } else {
-                const newPost = {
-                    id: Date.now(),
-                    title,
-                    content,
-                    date,
-                    tags
-                };
-                blogPosts.unshift(newPost);
-            }
-
-            renderBlogPosts();
-            modal.classList.remove('active');
-            blogForm.reset();
-        });
-
-        window.viewPost = function(id) {
-            const post = blogPosts.find(p => p.id === id);
-            alert(`=== ${post.title} ===\n\n${post.content}\n\nDate: ${post.date}\nTags: ${post.tags.join(', ')}`);
-        };
-
-        window.editPost = function(id) {
-            editingPostId = id;
-            const post = blogPosts.find(p => p.id === id);
-            
-            document.getElementById('modalTitle').textContent = '[ EDIT POST ]';
-            document.getElementById('postTitle').value = post.title;
-            document.getElementById('postContent').value = post.content;
-            document.getElementById('postTags').value = post.tags.join(', ');
-            
-            modal.classList.add('active');
-        };
-
-        window.deletePost = function(id) {
-            if (confirm('이 포스트를 삭제하시겠습니까?')) {
-                blogPosts = blogPosts.filter(p => p.id !== id);
-                renderBlogPosts();
-            }
-        };
-
-        // Search Functionality
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = blogPosts.filter(post => 
-                post.title.toLowerCase().includes(searchTerm) ||
-                post.content.toLowerCase().includes(searchTerm) ||
-                post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
-            renderBlogPosts(filtered);
-        });
-
-        // Initial render
-        renderBlogPosts();
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
