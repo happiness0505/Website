@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITYZEN - Security Portfolio</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-cyan: #00ffff;
+    --primary-blue: #0080ff;
+    --accent-purple: #8000ff;
+    --bg-dark: #0a0e1a;
+    --bg-darker: #050810;
+    --panel-bg: rgba(10, 14, 26, 0.85);
+    --border-glow: rgba(0, 255, 255, 0.25);
+    --text-primary: #00ffff;
+    --text-secondary: #80c0ff;
+    --text-dim: rgba(0, 255, 255, 0.5);
+    --success: #00ff88;
+    --warning: #ffaa00;
+    --danger: #ff0066;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.4s ease;
+    --transition-slow: 0.6s ease;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+}
+
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    background: var(--bg-darker);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ===== ANIMATED BACKGROUND ===== */
+#circuit-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+/* ===== NAVIGATION ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 70px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--border-glow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 1000;
+    box-shadow: 0 2px 15px rgba(0, 255, 255, 0.06);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.logo-icon-svg {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+}
+
+.nav-logo .accent {
+    color: var(--primary-cyan);
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: var(--transition-normal);
+    position: relative;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-cyan), rgba(128, 0, 255, 0.6));
+    transition: var(--transition-normal);
+    border-radius: 2px;
+}
+
+.nav-link:hover::before,
+.nav-link.active::before {
+    width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary-cyan);
+    border-color: var(--border-glow);
+    background: rgba(128, 0, 255, 0.06);
+    box-shadow: 0 0 8px rgba(128, 0, 255, 0.06);
+}
+
+.nav-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+    box-shadow: 0 0 4px rgba(0, 255, 136, 0.4);
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    margin-top: 70px;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.page {
+    display: none;
+    animation: fadeInPage 0.5s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.glitch {
+    animation: glitch-animation 3s infinite;
+}
+
+@keyframes glitch-animation {
+    0%, 90%, 100% {
+        transform: translate(0);
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+    }
+    92% {
+        transform: translate(-2px, 2px);
+        text-shadow: 2px 0 rgba(0, 128, 255, 0.4), -2px 0 rgba(255, 0, 102, 0.3);
+    }
+    94% {
+        transform: translate(2px, -2px);
+        text-shadow: -2px 0 rgba(0, 128, 255, 0.4), 2px 0 rgba(255, 0, 102, 0.3);
+    }
+}
+
+.header-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-cyan), var(--primary-blue), var(--primary-cyan), transparent);
+    box-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
+    animation: line-glow 2s ease-in-out infinite;
+}
+
+@keyframes line-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ===== HUD PANELS ===== */
+.hud-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-glow);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border-radius: var(--radius-lg);
+}
+
+.hud-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(128, 0, 255, 0);
+    z-index: 0;
+    transition: background 0.3s ease;
+    border-radius: var(--radius-lg);
+    pointer-events: none;
+}
+
+.hud-panel:hover::before {
+    background: rgba(128, 0, 255, 0.04);
+}
+
+.hud-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(128, 0, 255, 0.08);
+}
+
+.panel-header {
+    background: rgba(0, 128, 255, 0.1);
+    border-bottom: 1px solid var(--border-glow);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.panel-status {
+    font-size: 0.8rem;
+    color: var(--success);
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--success);
+    box-shadow: 0 0 4px rgba(0, 255, 136, 0.15);
+    border-radius: var(--radius-sm);
+}
+
+.panel-body { padding: 1.5rem; }
+
+.panel-btn {
+    background: transparent;
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-size: 1.2rem;
+    border-radius: var(--radius-sm);
+}
+
+.panel-btn:hover {
+    background: rgba(128, 0, 255, 0.15);
+    color: var(--primary-cyan);
+    box-shadow: 0 0 6px rgba(128, 0, 255, 0.1);
+    transform: scale(1.05);
+}
+
+/* ===== GRID LAYOUTS ===== */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+/* ===== PROFILE CARD ===== */
+.profile-card { grid-column: span 2; }
+
+.profile-card .panel-body {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    flex-shrink: 0;
+}
+
+.avatar-ring {
+    position: absolute;
+    inset: -5px;
+    border: 2px solid var(--primary-cyan);
+    border-radius: 50%;
+    animation: rotate-ring 4s linear infinite;
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.15);
+}
+
+@keyframes rotate-ring {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.avatar-ring::before {
+    content: '';
+    position: absolute;
+    top: -5px; right: -5px;
+    width: 20px; height: 20px;
+    background: var(--primary-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-blue));
+    border-radius: 50%;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.profile-info { flex: 1; }
+
+.profile-name {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.profile-role {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-cyan);
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.2);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+/* ===== RECENT POSTS ===== */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.post-item {
+    padding: 1rem;
+    border-left: 3px solid var(--primary-cyan);
+    background: rgba(0, 128, 255, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.post-item:hover {
+    background: rgba(128, 0, 255, 0.06);
+    transform: translateX(3px);
+}
+
+.post-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+/* ===== TODO LIST ===== */
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: rgba(0, 128, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.todo-item:hover {
+    background: rgba(128, 0, 255, 0.05);
+    transform: translateX(3px);
+}
+
+.todo-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-cyan);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+.todo-checkbox.checked {
+    background: var(--primary-cyan);
+    box-shadow: 0 0 4px rgba(0, 255, 255, 0.15);
+    color: var(--bg-dark);
+}
+
+.todo-text { flex: 1; }
+
+.todo-text.completed {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.todo-delete {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.todo-delete:hover {
+    background: rgba(255, 0, 102, 0.15);
+    color: var(--danger);
+    transform: scale(1.05);
+}
+
+/* ===== CIRCULAR PROGRESS ===== */
+.circular-progress {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.progress-ring { transform: rotate(-90deg); }
+
+.progress-ring-circle {
+    stroke-dasharray: 326.73;
+    stroke-dashoffset: 0;
+    animation: progress-anim 2s ease-out forwards;
+}
+
+@keyframes progress-anim {
+    to { stroke-dashoffset: 42.47; }
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-cyan);
+}
+
+.progress-label {
+    font-size: 1rem;
+    color: var(--text-dim);
+}
+
+/* ===== STAT BARS ===== */
+.stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stat-bar-item span {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 128, 255, 0.2);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.stat-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-cyan), var(--primary-blue));
+    box-shadow: 0 0 3px rgba(0, 255, 255, 0.15);
+    animation: fill-bar 1s ease-out forwards;
+    border-radius: 10px;
+}
+
+@keyframes fill-bar {
+    from { width: 0 !important; }
+}
+
+/* ===== NEWS / PROJECT / BLOG GRIDS ===== */
+.news-controls, .blog-controls, .career-controls, .resource-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn, .career-btn {
+    background: transparent;
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    border-radius: var(--radius-md);
+}
+
+.filter-btn:hover, .career-btn:hover {
+    background: rgba(128, 0, 255, 0.08);
+    box-shadow: 0 0 6px rgba(128, 0, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active, .career-btn.active {
+    background: var(--primary-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+}
+
+.refresh-btn, .download-btn, .add-btn {
+    background: transparent;
+    border: 1px solid var(--success);
+    color: var(--success);
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    border-radius: var(--radius-md);
+}
+
+.refresh-btn:hover, .download-btn:hover, .add-btn:hover {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--success);
+    box-shadow: 0 0 6px rgba(0, 255, 136, 0.08);
+    transform: translateY(-1px);
+}
+
+.news-grid, .project-grid, .blog-grid, .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.news-item, .project-card, .blog-post, .lab-service {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-glow);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.news-item::before, .project-card::before, .blog-post::before, .lab-service::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(128, 0, 255, 0);
+    transition: background 0.3s ease;
+    border-radius: var(--radius-lg);
+    pointer-events: none;
+}
+
+.news-item:hover::before, .project-card:hover::before, .blog-post:hover::before, .lab-service:hover::before {
+    background: rgba(128, 0, 255, 0.04);
+}
+
+.news-item:hover, .project-card:hover, .blog-post:hover, .lab-service:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(128, 0, 255, 0.08);
+}
+
+.news-badge, .project-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    border: 1px solid var(--primary-cyan);
+    color: var(--primary-cyan);
+    margin-bottom: 1rem;
+    border-radius: var(--radius-sm);
+}
+
+.news-title, .project-title, .blog-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-cyan);
+}
+
+.news-description, .project-description, .blog-excerpt {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.news-meta, .project-meta {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tech-tag {
+    padding: 0.3rem 0.8rem;
+    background: rgba(0, 128, 255, 0.2);
+    border: 1px solid var(--primary-blue);
+    font-size: 0.8rem;
+    color: var(--primary-blue);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.tech-tag:hover {
+    background: rgba(128, 0, 255, 0.12);
+    color: var(--text-primary);
+}
+
+/* ===== TIMELINE ===== */
+.timeline {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary-cyan), var(--primary-blue), var(--accent-purple));
+    box-shadow: 0 0 3px rgba(0, 255, 255, 0.1);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    animation: slideInFromLeft 0.6s ease;
+}
+
+@keyframes slideInFromLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -3.5rem; top: 0;
+    width: 15px; height: 15px;
+    background: var(--primary-cyan);
+    border: 3px solid var(--bg-dark);
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 255, 255, 0.2);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 4px rgba(0, 255, 255, 0.2); }
+    50% { transform: scale(1.2); box-shadow: 0 0 8px rgba(0, 255, 255, 0.3); }
+}
+
+.timeline-content {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-glow);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    box-shadow: 0 3px 10px rgba(128, 0, 255, 0.06);
+    transform: translateX(3px);
+}
+
+.timeline-date {
+    color: var(--primary-cyan);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+}
+
+.timeline-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ===== RESOURCE CATEGORIES ===== */
+.category-section { margin-bottom: 3rem; }
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-glow);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.category-icon { font-size: 1.2rem; color: var(--text-dim); }
+.category-title { font-size: 1.5rem; letter-spacing: 2px; }
+
+.resource-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.resource-item {
+    background: var(--panel-bg);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.resource-item:hover {
+    background: rgba(128, 0, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.resource-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    flex: 1;
+}
+
+.resource-link:hover { color: var(--primary-cyan); }
+
+.resource-delete {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.resource-delete:hover {
+    background: rgba(255, 0, 102, 0.12);
+    color: var(--danger);
+    transform: scale(1.05);
+}
+
+/* ===== BLOG INFO ===== */
+.blog-info { margin-bottom: 2rem; }
+
+.info-box {
+    background: rgba(0, 128, 255, 0.1);
+    border: 1px solid var(--border-glow);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+}
+
+.info-box h3 { margin-bottom: 1rem; color: var(--primary-cyan); }
+
+.info-box code {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg-darker);
+    border: 1px solid var(--border-glow);
+    color: var(--success);
+    border-radius: var(--radius-sm);
+}
+
+/* ===== LAB WARNING ===== */
+.lab-warning {
+    background: rgba(255, 170, 0, 0.1);
+    border: 2px solid var(--warning);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-radius: var(--radius-lg);
+}
+
+.warning-icon { font-size: 2rem; color: var(--warning); }
+
+.lab-status {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.lab-status.testing { border: 1px solid var(--warning); color: var(--warning); }
+.lab-status.stable { border: 1px solid var(--success); color: var(--success); }
+.lab-status.unstable { border: 1px solid var(--danger); color: var(--danger); }
+
+/* ===== FORMS & INPUTS ===== */
+.search-input, .select-input, .modal-input {
+    background: var(--bg-darker);
+    border: 1px solid var(--border-glow);
+    color: var(--text-primary);
+    padding: 0.8rem 1.2rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.search-input:focus, .select-input:focus, .modal-input:focus {
+    outline: none;
+    box-shadow: 0 0 6px rgba(128, 0, 255, 0.08);
+}
+
+.search-input { flex: 1; max-width: 400px; }
+.select-input { cursor: pointer; }
+
+/* ===== MODALS ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+    background: var(--panel-bg);
+    border: 2px solid var(--border-glow);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease;
+    border-radius: var(--radius-xl);
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    background: rgba(0, 128, 255, 0.2);
+    border-bottom: 1px solid var(--border-glow);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+    color: var(--primary-cyan);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-input { width: 100%; }
+
+.modal-btn {
+    background: var(--primary-cyan);
+    border: none;
+    color: var(--bg-dark);
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.modal-btn:hover {
+    box-shadow: 0 0 8px rgba(128, 0, 255, 0.1);
+    transform: scale(1.03);
+    background: var(--primary-cyan);
+    filter: brightness(0.9);
+}
+
+/* ===== CAREER VIEW ===== */
+.career-view { display: none; }
+.career-view.active { display: block; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+    .nav-menu { gap: 0.3rem; }
+    .nav-link { padding: 0.5rem 0.8rem; font-size: 0.85rem; }
+    .profile-card { grid-column: span 1; }
+}
+
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; height: auto; padding: 1rem; }
+    .nav-menu { flex-wrap: wrap; justify-content: center; }
+    .main-content { padding: 1rem; }
+    .page-header h1 { font-size: 2rem; }
+    .grid-container { grid-template-columns: 1fr; }
+    .profile-card .panel-body { flex-direction: column; text-align: center; }
+    .news-grid, .project-grid, .blog-grid, .lab-grid { grid-template-columns: 1fr; }
+    .timeline { padding-left: 2rem; }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-darker); border-radius: 10px; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-cyan), var(--primary-blue));
+    border: 2px solid var(--bg-darker);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--primary-cyan); }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <canvas id="circuit-bg"></canvas>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <svg class="logo-icon-svg" viewBox="0 0 40 40" fill="none">
+                <path d="M20 2L4 10v10c0 11 7 17 16 20 9-3 16-9 16-20V10L20 2z" stroke="url(#logoGrad)" stroke-width="1.5" fill="rgba(0,255,255,0.04)"/>
+                <path d="M20 10l-8 4v5c0 6 3.5 9.5 8 11 4.5-1.5 8-5 8-11v-5l-8-4z" stroke="url(#logoGrad)" stroke-width="1" fill="rgba(0,128,255,0.06)"/>
+                <circle cx="20" cy="21" r="3" stroke="url(#logoGrad)" stroke-width="1.2" fill="rgba(0,255,255,0.1)"/>
+                <defs><linearGradient id="logoGrad" x1="4" y1="2" x2="36" y2="38"><stop offset="0%" stop-color="#00ffff"/><stop offset="100%" stop-color="#0080ff"/></linearGradient></defs>
+            </svg>
+            <span>CITY<span class="accent">ZEN</span></span>
+        </div>
+        <ul class="nav-menu">
+            <li><a class="nav-link active" data-page="dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+            </a></li>
+            <li><a class="nav-link" data-page="news">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M7 8h6M7 12h10M7 16h4"/></svg>
+                News
+            </a></li>
+            <li><a class="nav-link" data-page="career">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg>
+                Career
+            </a></li>
+            <li><a class="nav-link" data-page="resources">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                Resources
+            </a></li>
+            <li><a class="nav-link" data-page="projects">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Projects
+            </a></li>
+            <li><a class="nav-link" data-page="blog">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                Blog
+            </a></li>
+            <li><a class="nav-link" data-page="lab">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6v5.586a1 1 0 00.293.707l4.414 4.414A2 2 0 0120.414 16H3.586a2 2 0 01-.707-3.293L7.293 9.293A1 1 0 008 8.586V3z"/><path d="M9 3h6"/></svg>
+                Lab
+            </a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            <span id="current-time"></span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page active">
+            <div class="page-header">
+                <h1 class="glitch" data-text="시스템 대시보드">시스템 대시보드</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="grid-container">
+                <div class="hud-panel profile-card">
+                    <div class="panel-header">
+                        <span>사용자 프로필</span>
+                        <span class="panel-status">활성</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="profile-avatar">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-img"></div>
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="profile-name">ADMIN_GHOST</h2>
+                            <p class="profile-role">보안 연구원 | 개발자</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">127</span>
+                                    <span class="stat-label">프로젝트</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">42</span>
+                                    <span class="stat-label">취약점</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">5년</span>
+                                    <span class="stat-label">경력</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hud-panel recent-posts">
+                    <div class="panel-header">
+                        <span>최근 글</span>
+                        <span class="panel-status">갱신됨</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="post-list" id="recentPosts"></div>
+                    </div>
+                </div>
+                <div class="hud-panel todo-panel">
+                    <div class="panel-header">
+                        <span>할 일 목록</span>
+                        <button class="panel-btn" id="addTodoBtn">+</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="todo-list" id="todoList"></div>
+                    </div>
+                </div>
+                <div class="hud-panel stats-panel">
+                    <div class="panel-header">
+                        <span>시스템 상태</span>
+                        <span class="panel-status">모니터링 중</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="circular-progress">
+                            <svg class="progress-ring" width="120" height="120">
+                                <circle class="progress-ring-circle" stroke="#00ffff" stroke-width="4" fill="transparent" r="52" cx="60" cy="60"/>
+                            </svg>
+                            <div class="progress-text">
+                                <span class="progress-value">87</span>
+                                <span class="progress-label">%</span>
+                            </div>
+                        </div>
+                        <div class="stat-bars">
+                            <div class="stat-bar-item">
+                                <span>CPU 사용량</span>
+                                <div class="stat-bar"><div class="stat-bar-fill" style="width: 65%"></div></div>
+                            </div>
+                            <div class="stat-bar-item">
+                                <span>메모리</span>
+                                <div class="stat-bar"><div class="stat-bar-fill" style="width: 82%"></div></div>
+                            </div>
+                            <div class="stat-bar-item">
+                                <span>네트워크</span>
+                                <div class="stat-bar"><div class="stat-bar-fill" style="width: 45%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Page -->
+        <section id="news" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="뉴스피드">뉴스피드</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="news-controls">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="security">보안</button>
+                <button class="filter-btn" data-filter="tech">기술</button>
+                <button class="refresh-btn" id="refreshNews">↻ 새로고침</button>
+            </div>
+            <div class="news-grid" id="newsGrid"></div>
+        </section>
+
+        <!-- Career Page -->
+        <section id="career" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="경력 타임라인">경력 타임라인</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="career-controls">
+                <button class="career-btn active" data-view="timeline">타임라인 보기</button>
+                <button class="career-btn" data-view="detailed">상세 보기</button>
+                <button class="download-btn" id="downloadResume">⬇ 이력서 다운로드</button>
+            </div>
+            <div id="timelineView" class="career-view active"></div>
+            <div id="detailedView" class="career-view"></div>
+        </section>
+
+        <!-- Resources Page -->
+        <section id="resources" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="자료실">자료실</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="resource-controls">
+                <input type="text" id="resourceSearch" placeholder="자료 검색..." class="search-input">
+                <button class="add-btn" id="addResourceBtn">+ 자료 추가</button>
+            </div>
+            <div class="resource-categories" id="resourceCategories"></div>
+        </section>
+
+        <!-- Projects Page -->
+        <section id="projects" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="프로젝트 쇼케이스">프로젝트 쇼케이스</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="project-grid" id="projectGrid"></div>
+        </section>
+
+        <!-- Blog Page -->
+        <section id="blog" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="블로그 시스템">블로그 시스템</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="blog-info">
+                <div class="info-box">
+                    <h3>옵시디언 연동</h3>
+                    <p>Obsidian Git 플러그인 → GitHub → 자동 배포 연결됨</p>
+                    <code>Next.js + Contentlayer + MDX</code>
+                </div>
+            </div>
+            <div class="blog-controls">
+                <input type="text" id="blogSearch" placeholder="글 검색..." class="search-input">
+                <select id="blogCategory" class="select-input">
+                    <option value="all">전체 카테고리</option>
+                    <option value="security">보안</option>
+                    <option value="development">개발</option>
+                    <option value="tutorial">튜토리얼</option>
+                </select>
+            </div>
+            <div class="blog-grid" id="blogGrid"></div>
+        </section>
+
+        <!-- Lab Page -->
+        <section id="lab" class="page">
+            <div class="page-header">
+                <h1 class="glitch" data-text="실험실">실험실</h1>
+                <div class="header-line"></div>
+            </div>
+            <div class="lab-warning">
+                <span class="warning-icon">⚠</span>
+                <p>주의: 실험 단계의 서비스입니다</p>
+            </div>
+            <div class="lab-grid" id="labGrid"></div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="todoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>할 일 추가</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="todoInput" placeholder="할 일을 입력하세요..." class="modal-input">
+                <button class="modal-btn" id="saveTodoBtn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="resourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>자료 추가</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="resourceTitle" placeholder="제목..." class="modal-input">
+                <input type="text" id="resourceUrl" placeholder="URL..." class="modal-input">
+                <select id="resourceCategory" class="modal-input">
+                    <option value="learning">학습</option>
+                    <option value="tools">도구</option>
+                    <option value="documentation">문서</option>
+                    <option value="community">커뮤니티</option>
+                </select>
+                <button class="modal-btn" id="saveResourceBtn">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ===== INITIAL DATA =====
+let todos = [
+    { id: 1, text: '보안 감사 완료하기', completed: false },
+    { id: 2, text: '포트폴리오 프로젝트 업데이트', completed: false },
+    { id: 3, text: 'XSS 관련 블로그 글 작성', completed: true }
+];
+
+let resources = {
+    learning: [
+        { id: 1, title: 'OWASP Top 10', url: 'https://owasp.org/www-project-top-ten/' },
+        { id: 2, title: 'HackTheBox', url: 'https://www.hackthebox.com/' },
+        { id: 3, title: 'PortSwigger Academy', url: 'https://portswigger.net/web-security' }
+    ],
+    tools: [
+        { id: 4, title: 'Burp Suite', url: 'https://portswigger.net/burp' },
+        { id: 5, title: 'Metasploit', url: 'https://www.metasploit.com/' },
+        { id: 6, title: 'Wireshark', url: 'https://www.wireshark.org/' }
+    ],
+    documentation: [
+        { id: 7, title: 'MDN Web Docs', url: 'https://developer.mozilla.org/' },
+        { id: 8, title: 'Python Docs', url: 'https://docs.python.org/' },
+        { id: 9, title: 'React Docs', url: 'https://react.dev/' }
+    ],
+    community: [
+        { id: 10, title: 'GitHub', url: 'https://github.com/' },
+        { id: 11, title: 'Stack Overflow', url: 'https://stackoverflow.com/' },
+        { id: 12, title: 'Reddit /r/netsec', url: 'https://reddit.com/r/netsec' }
+    ]
+};
+
+const newsData = [
+    { id: 1, category: 'security', title: 'Apache Log4j 치명적 제로데이 취약점 발견', description: '수백만 개의 Java 애플리케이션에 영향을 미치는 심각한 취약점이 발견되었습니다...', date: '2025-02-08', source: 'SecurityWeek' },
+    { id: 2, category: 'tech', title: 'OpenAI, GPT-5 AI 모델 발표', description: 'OpenAI가 향상된 추론 능력을 갖춘 차세대 언어 모델을 공개했습니다...', date: '2025-02-07', source: 'TechCrunch' },
+    { id: 3, category: 'security', title: '의료기관 대상 새로운 랜섬웨어 캠페인', description: '사이버 보안 연구원들이 정교한 랜섬웨어 공격을 확인했습니다...', date: '2025-02-06', source: 'BleepingComputer' },
+    { id: 4, category: 'tech', title: '양자 컴퓨팅 획기적 성과 달성', description: '과학자들이 대규모 실용적 양자 오류 정정을 시연했습니다...', date: '2025-02-05', source: 'Nature' }
+];
+
+const projectsData = [
+    { id: 1, title: 'SecureAuth 플랫폼', description: '생체인증 통합 및 영지식 증명 구현을 포함한 다중 인증 시스템.', tech: ['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Docker'], status: '운영 중', github: 'https://github.com/username/secureauth' },
+    { id: 2, title: 'VulnScanner Pro', description: '머신러닝 기반 익스플로잇 탐지 및 리포팅 기능을 갖춘 자동화 취약점 스캐너.', tech: ['Go', 'TensorFlow', 'MongoDB', 'React', 'GraphQL'], status: '베타', github: 'https://github.com/username/vulnscanner' },
+    { id: 3, title: 'CryptoComm', description: '완전 순방향 비밀성을 갖춘 종단 간 암호화 메시징 애플리케이션.', tech: ['Rust', 'WebRTC', 'Signal Protocol', 'React Native'], status: '개발 중', github: 'https://github.com/username/cryptocomm' },
+    { id: 4, title: '위협 인텔리전스 대시보드', description: '실시간 위협 정보 수집 및 시각화 플랫폼.', tech: ['Node.js', 'Elasticsearch', 'Kibana', 'Vue.js', 'Socket.io'], status: '운영 중', github: 'https://github.com/username/threatintel' }
+];
+
+const blogPosts = [
+    { id: 1, title: 'SQL 인젝션 이해하기: 기초부터 고급까지', excerpt: 'SQL 인젝션 취약점, 공격 기법, 방어 전략에 대한 종합 가이드...', category: 'security', date: '2025-02-01', tags: ['SQL', '웹 보안', 'OWASP'] },
+    { id: 2, title: 'JWT 인증으로 안전한 API 구축하기', excerpt: 'REST API에 견고한 JWT 기반 인증을 구현하는 모범 사례를 알아봅니다...', category: 'development', date: '2025-01-28', tags: ['API', 'JWT', '보안'] },
+    { id: 3, title: '악성코드 리버스 엔지니어링: 실전 접근법', excerpt: 'IDA Pro와 동적 분석 도구를 활용한 악성 소프트웨어 분석 단계별 튜토리얼...', category: 'tutorial', date: '2025-01-25', tags: ['악성코드', '리버싱', 'IDA Pro'] }
+];
+
+const careerData = [
+    { id: 1, period: '2024 - 현재', title: '수석 보안 연구원', company: 'CyberSec Labs', description: 'Fortune 500 고객 대상 고급 위협 연구 및 모의해킹 수행.', achievements: ['주요 소프트웨어 플랫폼에서 치명적 취약점 5건 발견', '20개 이상 기업 대상 레드팀 작전 주도', '신규 공격 벡터에 관한 연구 논문 발표'] },
+    { id: 2, period: '2022 - 2024', title: '보안 엔지니어', company: 'TechGuard Solutions', description: '보안 솔루션 개발 및 취약점 진단 수행.', achievements: ['자동화 보안 스캐닝 파이프라인 구축', '사고 대응 시간 60% 단축', '50명 이상의 개발자에게 시큐어 코딩 교육'] },
+    { id: 3, period: '2020 - 2022', title: '주니어 보안 분석가', company: 'SecureNet Corp', description: '보안 모니터링 및 사고 대응 업무 수행.', achievements: ['월 1,000건 이상의 보안 이벤트 분석', 'SIEM 상관관계 규칙 구현', 'CEH 및 OSCP 자격증 취득'] }
+];
+
+const labServices = [
+    { id: 1, title: 'AI 피싱 탐지기', description: '이메일과 웹사이트의 피싱 지표를 분석하는 머신러닝 모델.', status: 'testing', tech: ['Python', 'TensorFlow', 'NLP'], uptime: '87%' },
+    { id: 2, title: '블록체인 감사 도구', description: 'Ethereum 및 Solana 스마트 컨트랙트 취약점 스캐너.', status: 'stable', tech: ['Solidity', 'Rust', 'Web3.js'], uptime: '99%' },
+    { id: 3, title: '네트워크 트래픽 분석기', description: '이상 탐지 기능이 포함된 실시간 네트워크 패킷 분석.', status: 'unstable', tech: ['Go', 'Wireshark', 'ML'], uptime: '72%' }
+];
+
+// ===== CIRCUIT BACKGROUND ANIMATION =====
+const canvas = document.getElementById('circuit-bg');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class CircuitNode {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.radius = Math.random() * 2 + 1;
+        this.hue = Math.random() * 60 + 170; // 170~230: cyan to blue-purple range
+        this.hueSpeed = (Math.random() - 0.5) * 0.3;
+        this.pulse = Math.random() * Math.PI * 2;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        this.hue += this.hueSpeed;
+        if (this.hue > 260 || this.hue < 170) this.hueSpeed *= -1;
+        this.pulse += 0.02;
+    }
+    draw() {
+        const glow = Math.sin(this.pulse) * 0.2 + 0.6;
+        const r = this.radius * glow + 0.5;
+        // Outer glow
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r * 3);
+        gradient.addColorStop(0, `hsla(${this.hue}, 80%, 65%, ${0.15 * glow})`);
+        gradient.addColorStop(1, `hsla(${this.hue}, 80%, 65%, 0)`);
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, r * 3, 0, Math.PI * 2);
+        ctx.fill();
+        // Core dot
+        ctx.fillStyle = `hsla(${this.hue}, 80%, 70%, ${0.5 * glow})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+const nodes = Array.from({ length: 80 }, () => new CircuitNode());
+
+function animateCircuit() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw connections
+    nodes.forEach((node, i) => {
+        nodes.slice(i + 1).forEach(other => {
+            const dx = node.x - other.x;
+            const dy = node.y - other.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 180) {
+                const alpha = (1 - dist / 180) * 0.15;
+                const midHue = (node.hue + other.hue) / 2;
+                ctx.strokeStyle = `hsla(${midHue}, 80%, 60%, ${alpha})`;
+                ctx.lineWidth = (1 - dist / 180) * 1.2;
+                ctx.beginPath();
+                ctx.moveTo(node.x, node.y);
+                ctx.lineTo(other.x, other.y);
+                ctx.stroke();
+            }
+        });
+    });
+
+    nodes.forEach(node => { node.update(); node.draw(); });
+    requestAnimationFrame(animateCircuit);
+}
+animateCircuit();
+
+// ===== NAVIGATION =====
+const navLinks = document.querySelectorAll('.nav-link');
+const pages = document.querySelectorAll('.page');
+
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetPage = link.getAttribute('data-page');
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        pages.forEach(page => {
+            page.classList.remove('active');
+            if (page.id === targetPage) page.classList.add('active');
+        });
+    });
+});
+
+// ===== CURRENT TIME =====
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('current-time').textContent = timeString;
+}
+updateTime();
+setInterval(updateTime, 1000);
+
+// ===== TODO FUNCTIONALITY =====
+function renderTodos() {
+    const todoList = document.getElementById('todoList');
+    todoList.innerHTML = todos.map(todo => `
+        <div class="todo-item">
+            <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo(${todo.id})">
+                ${todo.completed ? '✓' : ''}
+            </div>
+            <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
+            <button class="todo-delete" onclick="deleteTodo(${todo.id})">×</button>
+        </div>
+    `).join('');
+}
+
+function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) { todo.completed = !todo.completed; renderTodos(); }
+}
+
+function deleteTodo(id) {
+    todos = todos.filter(t => t.id !== id);
+    renderTodos();
+}
+
+document.getElementById('addTodoBtn').addEventListener('click', () => {
+    document.getElementById('todoModal').classList.add('active');
+});
+
+document.getElementById('saveTodoBtn').addEventListener('click', () => {
+    const input = document.getElementById('todoInput');
+    if (input.value.trim()) {
+        todos.push({ id: Date.now(), text: input.value.trim(), completed: false });
+        renderTodos();
+        input.value = '';
+        document.getElementById('todoModal').classList.remove('active');
+    }
+});
+
+// ===== RECENT POSTS =====
+function renderRecentPosts() {
+    const recentPostsDiv = document.getElementById('recentPosts');
+    const recentPosts = blogPosts.slice(0, 3);
+    recentPostsDiv.innerHTML = recentPosts.map(post => `
+        <div class="post-item">
+            <div class="post-title">${post.title}</div>
+            <div class="post-meta">${post.date} • ${post.category}</div>
+        </div>
+    `).join('');
+}
+
+// ===== NEWS FEED =====
+let currentFilter = 'all';
+
+function renderNews() {
+    const newsGrid = document.getElementById('newsGrid');
+    const filtered = currentFilter === 'all' ? newsData : newsData.filter(n => n.category === currentFilter);
+    newsGrid.innerHTML = filtered.map(news => {
+        const catLabel = {security: '보안', tech: '기술'}[news.category] || news.category;
+        return `
+        <div class="news-item">
+            <span class="news-badge">${catLabel}</span>
+            <h3 class="news-title">${news.title}</h3>
+            <p class="news-description">${news.description}</p>
+            <div class="news-meta">${news.date} • ${news.source}</div>
+        </div>
+    `}).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        renderNews();
+    });
+});
+
+document.getElementById('refreshNews').addEventListener('click', () => {
+    const btn = document.getElementById('refreshNews');
+    btn.style.transform = 'rotate(360deg)';
+    btn.style.transition = 'transform 0.5s ease';
+    setTimeout(() => { btn.style.transform = 'rotate(0deg)'; renderNews(); }, 500);
+});
+
+// ===== CAREER TIMELINE =====
+function renderTimeline() {
+    const timelineView = document.getElementById('timelineView');
+    timelineView.innerHTML = `
+        <div class="timeline">
+            ${careerData.map(career => `
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">${career.period}</div>
+                        <h3 class="timeline-title">${career.title}</h3>
+                        <h4 style="color: var(--text-secondary); margin-bottom: 1rem;">${career.company}</h4>
+                        <p class="timeline-description">${career.description}</p>
+                        <ul style="margin-top: 1rem; padding-left: 1.5rem; color: var(--text-secondary);">
+                            ${career.achievements.map(a => `<li style="margin-bottom: 0.5rem;">${a}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function renderDetailedResume() {
+    const detailedView = document.getElementById('detailedView');
+    detailedView.innerHTML = `
+        <div class="hud-panel">
+            <div class="panel-header"><span>상세 이력서</span></div>
+            <div class="panel-body" style="line-height: 1.8;">
+                <h2 style="margin-bottom: 2rem; color: var(--primary-cyan);">경력 사항</h2>
+                ${careerData.map(career => `
+                    <div style="margin-bottom: 3rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <h3 style="color: var(--text-primary);">${career.title}</h3>
+                            <span style="color: var(--text-dim);">${career.period}</span>
+                        </div>
+                        <h4 style="color: var(--primary-blue); margin-bottom: 1rem;">${career.company}</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">${career.description}</p>
+                        <div style="margin-top: 1rem;">
+                            <strong style="color: var(--primary-cyan);">주요 성과:</strong>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: var(--text-secondary);">
+                                ${career.achievements.map(a => `<li style="margin-bottom: 0.5rem;">${a}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `).join('')}
+                <h2 style="margin: 3rem 0 2rem; color: var(--primary-cyan);">기술 스택</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                    <div><h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">보안</h4><p style="color: var(--text-secondary);">모의해킹, 취약점 진단, 위협 인텔리전스, 사고 대응</p></div>
+                    <div><h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">프로그래밍</h4><p style="color: var(--text-secondary);">Python, Go, Rust, JavaScript, C++</p></div>
+                    <div><h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">도구</h4><p style="color: var(--text-secondary);">Burp Suite, Metasploit, IDA Pro, Wireshark, Docker, Kubernetes</p></div>
+                    <div><h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">자격증</h4><p style="color: var(--text-secondary);">OSCP, CEH, CISSP, GPEN</p></div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+document.querySelectorAll('.career-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.career-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const view = btn.getAttribute('data-view');
+        document.querySelectorAll('.career-view').forEach(v => v.classList.remove('active'));
+        document.getElementById(`${view}View`).classList.add('active');
+    });
+});
+
+document.getElementById('downloadResume').addEventListener('click', () => {
+    alert('이력서 다운로드 기능 - 실제 PDF 파일을 연결하세요');
+});
+
+// ===== RESOURCES =====
+function renderResources() {
+    const container = document.getElementById('resourceCategories');
+    const catLabels = {learning: '학습', tools: '도구', documentation: '문서', community: '커뮤니티'};
+    container.innerHTML = Object.keys(resources).map(category => `
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-icon">—</span>
+                <h2 class="category-title">${catLabels[category] || category.toUpperCase()}</h2>
+            </div>
+            <div class="resource-list">
+                ${resources[category].map(resource => `
+                    <div class="resource-item">
+                        <a href="${resource.url}" target="_blank" class="resource-link">${resource.title}</a>
+                        <button class="resource-delete" onclick="deleteResource(${resource.id})">×</button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function deleteResource(id) {
+    Object.keys(resources).forEach(category => {
+        resources[category] = resources[category].filter(r => r.id !== id);
+    });
+    renderResources();
+}
+
+document.getElementById('addResourceBtn').addEventListener('click', () => {
+    document.getElementById('resourceModal').classList.add('active');
+});
+
+document.getElementById('saveResourceBtn').addEventListener('click', () => {
+    const title = document.getElementById('resourceTitle').value.trim();
+    const url = document.getElementById('resourceUrl').value.trim();
+    const category = document.getElementById('resourceCategory').value;
+    if (title && url) {
+        resources[category].push({ id: Date.now(), title, url });
+        renderResources();
+        document.getElementById('resourceTitle').value = '';
+        document.getElementById('resourceUrl').value = '';
+        document.getElementById('resourceModal').classList.remove('active');
+    }
+});
+
+document.getElementById('resourceSearch').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.resource-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+    });
+});
+
+// ===== PROJECTS =====
+function renderProjects() {
+    const projectGrid = document.getElementById('projectGrid');
+    projectGrid.innerHTML = projectsData.map(project => `
+        <div class="project-card">
+            <span class="project-badge">${project.status}</span>
+            <h3 class="project-title">${project.title}</h3>
+            <p class="project-description">${project.description}</p>
+            <div class="tech-stack">
+                ${project.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+            </div>
+            <div class="project-meta" style="margin-top: 1rem;">
+                <a href="${project.github}" target="_blank" style="color: var(--primary-cyan);">GitHub에서 보기 →</a>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== BLOG =====
+let currentCategory = 'all';
+
+function renderBlog() {
+    const blogGrid = document.getElementById('blogGrid');
+    const filtered = currentCategory === 'all' ? blogPosts : blogPosts.filter(post => post.category === currentCategory);
+    const catLabels = {security: '보안', development: '개발', tutorial: '튜토리얼'};
+    blogGrid.innerHTML = filtered.map(post => `
+        <div class="blog-post">
+            <h3 class="blog-title">${post.title}</h3>
+            <div class="news-meta">${post.date} • ${catLabels[post.category] || post.category}</div>
+            <p class="blog-excerpt">${post.excerpt}</p>
+            <div class="tech-stack">
+                ${post.tags.map(tag => `<span class="tech-tag">#${tag}</span>`).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+document.getElementById('blogCategory').addEventListener('change', (e) => {
+    currentCategory = e.target.value;
+    renderBlog();
+});
+
+document.getElementById('blogSearch').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    document.querySelectorAll('.blog-post').forEach(post => {
+        const text = post.textContent.toLowerCase();
+        post.style.display = text.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+
+// ===== LAB SERVICES =====
+function renderLab() {
+    const labGrid = document.getElementById('labGrid');
+    labGrid.innerHTML = labServices.map(service => {
+        const statusLabel = {testing: '테스트 중', stable: '안정', unstable: '불안정'}[service.status] || service.status;
+        return `
+        <div class="lab-service">
+            <h3 class="project-title">${service.title}</h3>
+            <span class="lab-status ${service.status}">${statusLabel}</span>
+            <p class="project-description">${service.description}</p>
+            <div class="tech-stack">
+                ${service.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+            </div>
+            <div style="margin-top: 1rem; color: var(--text-dim);">
+                가동률: <span style="color: var(--success);">${service.uptime}</span>
+            </div>
+        </div>
+    `}).join('');
+}
+
+// ===== MODAL CLOSE =====
+document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => { btn.closest('.modal').classList.remove('active'); });
+});
+
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+});
+
+// ===== INITIALIZE =====
+document.addEventListener('DOMContentLoaded', () => {
+    renderTodos();
+    renderRecentPosts();
+    renderNews();
+    renderTimeline();
+    renderDetailedResume();
+    renderResources();
+    renderProjects();
+    renderBlog();
+    renderLab();
+});
+    </script>
+</body>
+</html>
